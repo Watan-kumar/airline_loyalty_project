@@ -61,6 +61,8 @@ def load_data():
 
     return df, seg
 
+df,seg=load_data()
+
 SEG_ORDER  = ['Champions','Passive Loyalists','At-Risk Valuables','New Low-Engagers','Churned Members']
 PALETTE    = {'Champions':'#2ecc71','Passive Loyalists':'#3498db',
               'At-Risk Valuables':'#e67e22','New Low-Engagers':'#9b59b6',
