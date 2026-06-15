@@ -1,8 +1,3 @@
-"""
-Airline Loyalty Program — Behavioral Intelligence Dashboard
-Streamlit App | Consulting & Analytics Club, IIT Guwahati
-Run: streamlit run dashboard_app.py
-"""
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -14,7 +9,7 @@ from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
 
-# ── Page config ─────────────────────────────────────────────────────────
+#  Page config 
 st.set_page_config(
     page_title="Airline Loyalty Intelligence",
     page_icon="✈️",
@@ -22,7 +17,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ── Styles ───────────────────────────────────────────────────────────────
+# Styles 
 st.markdown("""
 <style>
     .main { background-color: #f8f9fa; }
@@ -51,7 +46,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ── Load data ─────────────────────────────────────────────────────────────
+# Load data 
 @st.cache_data
 def load_data():
     base_dir = Path(__file__).parent
@@ -80,7 +75,7 @@ if 'segment_name' not in df.columns:
 if 'Loyal Actives' in df['segment_name'].values:
     df['segment_name'] = df['segment_name'].map(rename)
 
-# ── Sidebar ───────────────────────────────────────────────────────────────
+#  Sidebar 
 st.sidebar.image("https://cdn-icons-png.flaticon.com/512/3125/3125713.png", width=60)
 st.sidebar.title("✈️ Loyalty Intelligence")
 st.sidebar.markdown("**Consulting & Analytics Club**  \nIIT Guwahati | Summer 2026")
@@ -105,9 +100,9 @@ card_filter = st.sidebar.multiselect("Loyalty Card", ['Star','Nova','Aurora'], d
 filtered = df[df['segment_name'].isin(selected_segs) & df['Loyalty Card'].isin(card_filter)]
 active   = df[df['segment_name'] != 'Churned Members']
 
-# ════════════════════════════════════════════════════════════════════════
+
 # PAGE 1 — Executive Overview
-# ════════════════════════════════════════════════════════════════════════
+
 if page == "📊 Executive Overview":
     st.title("Airline Loyalty Program — Executive Overview")
     st.caption("Behavioral intelligence analysis of 16,737 Canadian loyalty members | 2017–2018 flight data")
@@ -178,9 +173,8 @@ if page == "📊 Executive Overview":
 
     st.markdown('<div class="insight-box">💡 <strong>Key Insight:</strong> Passive Loyalists (44.5% of all members) have been with the program for 49 months on average but are stuck at Star tier with the lowest CLV. Tier upgrade activation is the single largest CLV opportunity in the program.</div>', unsafe_allow_html=True)
 
-# ════════════════════════════════════════════════════════════════════════
 # PAGE 2 — Segment Explorer
-# ════════════════════════════════════════════════════════════════════════
+
 elif page == "🎯 Segment Explorer":
     st.title("Segment Explorer")
     seg_choice = st.selectbox("Select a segment to explore", SEG_ORDER)
@@ -231,9 +225,8 @@ elif page == "🎯 Segment Explorer":
                textprops={'fontsize':7}, startangle=90)
         ax5.set_title('Education', fontsize=9); st.pyplot(fig5, use_container_width=True); plt.close()
 
-# ════════════════════════════════════════════════════════════════════════
 # PAGE 3 — Churn Risk Finder
-# ════════════════════════════════════════════════════════════════════════
+
 elif page == "⚠️ Churn Risk Finder":
     st.title("Churn Risk Finder")
     st.caption("Identify members who need immediate attention")
@@ -276,9 +269,8 @@ elif page == "⚠️ Churn Risk Finder":
 
     st.markdown('<div class="alert-box">⚠️ <strong>Action Required:</strong> At-Risk Valuables with churn probability > 10% should receive the 90-day onboarding sprint. Champions above 5% threshold should receive a personal outreach call within 7 days.</div>', unsafe_allow_html=True)
 
-# ════════════════════════════════════════════════════════════════════════
 # PAGE 4 — Provincial Analysis
-# ════════════════════════════════════════════════════════════════════════
+
 elif page == "🗺️ Provincial Analysis":
     st.title("Provincial Analysis")
     prov_df = df.groupby('Province').agg(
@@ -327,9 +319,8 @@ elif page == "🗺️ Provincial Analysis":
 
     st.markdown('<div class="alert-box">⚠️ <strong>Manitoba & Newfoundland</strong> show the highest churn rates (17.1% each), yet their average CLV is near the national median. Before designing retention offers, conduct a route gap analysis — no loyalty intervention can substitute for network competitiveness.</div>', unsafe_allow_html=True)
 
-# ════════════════════════════════════════════════════════════════════════
 # PAGE 5 — Retention Playbook
-# ════════════════════════════════════════════════════════════════════════
+
 elif page == "📋 Retention Playbook":
     st.title("Retention Playbook")
     st.caption("Segment-specific interventions — every recommendation names WHO, WHEN, WHAT, and HOW to measure success")
