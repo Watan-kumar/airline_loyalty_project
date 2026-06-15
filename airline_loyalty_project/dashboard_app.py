@@ -10,6 +10,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -53,11 +54,12 @@ st.markdown("""
 # ── Load data ─────────────────────────────────────────────────────────────
 @st.cache_data
 def load_data():
-    df = pd.read_csv('final_dataset.csv')
-    seg = pd.read_csv('segment_summary.csv')
-    return df, seg
+    base_dir = Path(__file__).parent
 
-df, seg = load_data()
+    df = pd.read_csv(base_dir / "final_dataset.csv")
+    seg = pd.read_csv(base_dir / "segment_summary.csv")
+
+    return df, seg
 
 SEG_ORDER  = ['Champions','Passive Loyalists','At-Risk Valuables','New Low-Engagers','Churned Members']
 PALETTE    = {'Champions':'#2ecc71','Passive Loyalists':'#3498db',
