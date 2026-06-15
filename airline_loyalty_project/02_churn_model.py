@@ -17,21 +17,17 @@ import warnings; warnings.filterwarnings('ignore')
 
 df = pd.read_csv('/Users/watankumar/Downloads/airline_loyalty_project/cleaned_features.csv')
 
-# ══════════════════════════════════════════════════════════════════════════
 # CHURN PREDICTION MODEL
-# Only use features available BEFORE churn event (no leakage)
-# Critically: exclude Cancellation Year/Month, flights_2018 (future)
-# Use only 2017 data + demographics + tenure as predictors
-# ══════════════════════════════════════════════════════════════════════════
+
 
 FEATURES = [
     'tenure_months', 'card_tier_num', 'education_num', 'Salary',
-    'total_flights', 'flights_2017',           # historical, not future
+    'total_flights', 'flights_2017',           
     'total_distance', 'total_points_acc', 'total_points_red',
     'redemption_ratio', 'flight_consistency',
     'avg_flights_per_month', 'flight_monthly_std',
     'value_per_flight', 'CLV', 'engagement_score',
-    # demographics encoded
+    
 ]
 
 TARGET = 'churned'
@@ -48,7 +44,7 @@ y = df[TARGET]
 # Impute any remaining NaN
 X = X.fillna(X.median())
 
-# ── Cross-validation comparison ────────────────────────────────────────
+#  Cross-validation comparison 
 models = {
     'Logistic Regression': LogisticRegression(max_iter=1000, class_weight='balanced'),
     'Random Forest':       RandomForestClassifier(n_estimators=200, class_weight='balanced',
@@ -65,20 +61,20 @@ for name, model in models.items():
     results[name] = scores
     print(f"  {name}: {scores.mean():.4f} ± {scores.std():.4f}")
 
-# ── Train best model (Random Forest) on full data for feature importance ──
+#  Train best model (Random Forest) on full data for feature importance 
 rf = RandomForestClassifier(n_estimators=300, class_weight='balanced',
                              random_state=42, n_jobs=-1)
 rf.fit(X, y)
 df['churn_probability'] = rf.predict_proba(X)[:, 1]
 
-# ── Feature importance ─────────────────────────────────────────────────
+#  Feature importance 
 fi = pd.Series(rf.feature_importances_, index=FEATURES).sort_values(ascending=False)
 print("\nTop 10 churn predictors:")
 print(fi.head(10).to_string())
 
-# ══════════════════════════════════════════════════════════════════════════
+
 # CUSTOMER SEGMENTATION (K-Means on behavioral features)
-# ══════════════════════════════════════════════════════════════════════════
+
 SEG_FEATURES = ['CLV', 'total_flights', 'flight_consistency',
                 'redemption_ratio', 'tenure_months', 'churn_probability',
                 'activity_trend', 'card_tier_num']
@@ -129,9 +125,9 @@ print("\nSegment name mapping:")
 for k,v in seg_names.items():
     print(f"  Cluster {k} → {v}")
 
-# ══════════════════════════════════════════════════════════════════════════
+
 # VISUALISATIONS — Figure 1: Churn Model
-# ══════════════════════════════════════════════════════════════════════════
+
 fig, axes = plt.subplots(1, 3, figsize=(18, 5))
 fig.suptitle('Churn Prediction Model — Airline Loyalty Program', fontsize=14, fontweight='bold')
 
@@ -169,9 +165,8 @@ plt.savefig('/Users/watankumar/Downloads/airline_loyalty_project/fig1_churn_mode
 plt.close()
 print("Saved fig1_churn_model.png")
 
-# ══════════════════════════════════════════════════════════════════════════
 # VISUALISATIONS — Figure 2: Segmentation
-# ══════════════════════════════════════════════════════════════════════════
+
 seg_named = df.groupby('segment_name').agg(
     n            = ('Loyalty Number', 'count'),
     avg_clv      = ('CLV', 'mean'),
